@@ -1,28 +1,42 @@
 package com.netcracker.edu.storage;
 
-import  java.util.Map;
-import java.util.HashMap;
+import com.netcracker.edu.entity.Person;
+
+import java.util.*;
 
 public final class TemporaryStorage {
-    private Map<String, Object> storage = new HashMap<String, Object>(256);
+    private Map<String, Object> storage = new HashMap<>(256);
 
-    private TemporaryStorage(){
+    private TemporaryStorage() {
 
     }
 
-    public Object getEntity(String id){
+    public Object getEntity(String id) {
         return storage.get(id);
     }
 
-    public void insertEntity(String id, Object entity){
-        storage.put(id,entity);
+    public Object deleteEntity(String id) {
+        return storage.remove(id);
     }
 
-    public static TemporaryStorage getInstance(){
+    public void deleteAllPerson() {
+        storage.values().removeIf(val -> val.getClass().equals(Person.class));
+    }
+
+    public List<Object> getAllEntity() {
+
+        return new ArrayList<>(storage.values());
+    }
+
+    public void insertEntity(String id, Object entity) {
+        storage.put(id, entity);
+    }
+
+    public static TemporaryStorage getInstance() {
         return Holder.instance;
     }
 
-    private static class Holder{
+    private static class Holder {
         private static TemporaryStorage instance = new TemporaryStorage();
     }
 }

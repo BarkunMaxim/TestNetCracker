@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,9 +35,10 @@ public class PersonServiceTest {
     private Person person;
     private String id;
     private UUID uuid;
+    private List<Person> personList = new ArrayList<>();
 
     @BeforeEach
-    public void init(){
+    public void init() {
         employer = new Employer();
         employer.setAge(30);
         employer.setName("Dima");
@@ -45,11 +48,14 @@ public class PersonServiceTest {
 
         id = UUID.randomUUID().toString();
 
-        person = new Person("Alex" ,(byte) 25);
+        person = new Person("Alex", (byte) 25);
+        personList.add(new Person("Max", (byte) 22));
+        personList.add(new Person("Vlad", (byte) 25));
+        personList.add(new Person("Makar", (byte) 15));
     }
 
     @Test
-    public void save(){
+    public void save() {
         when(personDao.savePerson(any(Person.class))).thenReturn(id);
 
         UUID uuid = personService.save(employer);
@@ -58,7 +64,7 @@ public class PersonServiceTest {
     }
 
     @Test
-    public void get() throws NotPersonException, PersonNotFoundException{
+    public void get() throws NotPersonException, PersonNotFoundException {
         when(personDao.getPerson(uuid.toString())).thenReturn(person);
 
         Person person = personService.get(uuid);
@@ -66,8 +72,50 @@ public class PersonServiceTest {
         assertNotNull(person);
     }
 
+    @Test
+    public void saveAll() {
 
+        List<String> idList = personService.saveAll(personList);
 
+        assertNotNull(idList);
+    }
 
+    @Test
+    public void findAll() {
+
+        List<Person> personList = personService.findAll();
+
+        assertNotNull(personList);
+    }
+
+    @Test
+    public void findByName() {
+
+        when(personService.findByName("Max")).thenReturn(personList.get(0));
+
+        Person person = personService.findByName("Max");
+
+        assertNotNull(person);
+    }
+
+    @Test
+    public void findByAge() {
+
+        when(personService.findByAge((byte) 22)).thenReturn(personList.get(0));
+
+        Person person = personService.findByAge((byte) 22);
+
+        assertNotNull(person);
+    }
+
+    @Test
+    public void findByAgeAndName() {
+
+        when(personService.findByAgeAndName("Max", (byte) 22)).thenReturn(personList.get(0));
+
+        Person person = personService.findByAgeAndName("Max", (byte) 22);
+
+        assertNotNull(person);
+    }
 
 }

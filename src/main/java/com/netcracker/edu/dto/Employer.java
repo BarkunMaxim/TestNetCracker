@@ -9,4 +9,12 @@ public class Employer {
     private String surname;
 
     private int age;
+
+    public Employer(){
+
+    }
+    public Employer(String name, byte age) {
+        this.name = name;
+        this.age = age;
+    }
 }
